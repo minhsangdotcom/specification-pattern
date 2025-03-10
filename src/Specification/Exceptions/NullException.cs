@@ -2,21 +2,20 @@ using System.Net;
 
 namespace Specification.Exceptions;
 
-public class NullException(NullExceptionParameters parameters) : Exception(WriteMessage(parameters))
+public class NullException(string name, string message, NullType nullType, object? target)
+    : Exception(WriteMessage(name, message, nullType, target))
 {
     public HttpStatusCode HttpStatusCode { get; private set; }
 
-    private static string WriteMessage(NullExceptionParameters parameters) =>
-        $"{parameters.Message} ({parameters.NullType} {parameters.Name}"
-        + (parameters.Target != null ? $" of {parameters.Target.GetType().FullName})" : ") ");
+    private static string WriteMessage(
+        string name,
+        string message,
+        NullType nullType,
+        object? target
+    ) =>
+        $"{message} ({nullType} {name}"
+        + (target != null ? $" of {target.GetType().FullName})" : ") ");
 }
-
-public record NullExceptionParameters(
-    string Name,
-    string Message,
-    NullType NullType,
-    object? Target
-);
 
 public enum NullType
 {

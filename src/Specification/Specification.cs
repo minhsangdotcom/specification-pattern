@@ -1,6 +1,6 @@
 using System.Linq.Expressions;
 using System.Text.Json;
-using Ardalis.GuardClauses;
+using Specification.Exceptions;
 using Specification.Interfaces;
 using Specification.Models;
 
@@ -31,10 +31,28 @@ public abstract class Specification<T> : ISpecification<T>
     internal void CombineExpression(Expression<Func<T, bool>> criteria, BinaryExpressionType type)
     {
         const string message = "is null while combing expression.";
+        // Guard.Against.Null(criteria, nameof(criteria), $"{nameof(criteria)} {message}");
+        // Guard.Against.Null(Criteria, nameof(Criteria), $"{nameof(Criteria)} {message}", this);
 
-        Guard.Against.Null(criteria, nameof(criteria), $"{nameof(criteria)} {message}");
+        if (criteria == null)
+        {
+            throw new NullException(
+                nameof(criteria),
+                $"{nameof(criteria)} {message}",
+                NullType.PropertyOrField,
+                null
+            );
+        }
 
-        Guard.Against.Null(Criteria, nameof(Criteria), $"{nameof(Criteria)} {message}", this);
+        if (Criteria == null)
+        {
+            throw new NullException(
+                nameof(Criteria),
+                $"{nameof(Criteria)} {message}",
+                NullType.PropertyOrField,
+                this
+            );
+        }
 
         ParameterExpression parameter = Expression.Parameter(typeof(T), "x");
 
