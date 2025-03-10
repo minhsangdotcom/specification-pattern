@@ -4,6 +4,13 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+
+    <PackageId>minhsangdotcom.TheTemplate.SpecificationPattern</PackageId>
+    <Version>1.0.0</Version>
+    <Authors>Tran Minh Sang</Authors>
+    <Company>minhsangdotcom</Company>
+    <PackageTags>csharp, nuget, clean architecture, Design pattern</PackageTags>
+    <Description>Specification pattern implementation</Description>
   </PropertyGroup>
 
   <ItemGroup>
