@@ -1,4 +1,5 @@
 using System.Linq.Expressions;
+using System.Runtime.InteropServices;
 using Microsoft.EntityFrameworkCore;
 using Specification.Models;
 
@@ -10,8 +11,10 @@ public static class IncludeExpression
     {
         Expression queryExpression = query.Expression!;
 
-        foreach (var include in includes)
+        Span<IncludeInfo> includeInfos = CollectionsMarshal.AsSpan(includes);
+        for (int i = 0; i < includeInfos.Length; i++)
         {
+            IncludeInfo include = includeInfos[i];
             ParameterExpression parameter = Expression.Parameter(include.EntityType!, "x");
 
             string command =

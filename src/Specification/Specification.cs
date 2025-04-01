@@ -1,5 +1,7 @@
 using System.Linq.Expressions;
 using System.Text.Json;
+using Specification.Builders;
+using Specification.Evaluators;
 using Specification.Exceptions;
 using Specification.Interfaces;
 using Specification.Models;
@@ -31,8 +33,6 @@ public abstract class Specification<T> : ISpecification<T>
     internal void CombineExpression(Expression<Func<T, bool>> criteria, BinaryExpressionType type)
     {
         const string message = "is null while combing expression.";
-        // Guard.Against.Null(criteria, nameof(criteria), $"{nameof(criteria)} {message}");
-        // Guard.Against.Null(Criteria, nameof(Criteria), $"{nameof(Criteria)} {message}", this);
 
         if (criteria == null)
         {
@@ -87,4 +87,21 @@ public abstract class Specification<T> : ISpecification<T>
         }
         return code;
     }
+}
+
+public abstract class Specification<T, TResponse> : Specification<T>, ISpecification<T, TResponse>
+    where T : class
+    where TResponse : class
+{
+    public Expression<Func<T, TResponse>> Selector { get; internal set; } = null!;
+
+    public Expression<Func<TResponse, bool>> Filter { get; internal set; } = null!;
+
+    public Expression<Func<TResponse, bool>> Search { get; internal set; } = null!;
+
+    public List<OrderByInfo<TResponse>> Sorts { get; internal set; } = [];
+
+    public int Skip { get; internal set; }
+
+    public int Take { get; internal set; }
 }

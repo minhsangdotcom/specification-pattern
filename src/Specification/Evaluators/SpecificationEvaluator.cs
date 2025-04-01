@@ -1,8 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-using Specification;
 using Specification.Interfaces;
 
-namespace Specification;
+namespace Specification.Evaluators;
 
 public class SpecificationEvaluator<T>
     where T : class
