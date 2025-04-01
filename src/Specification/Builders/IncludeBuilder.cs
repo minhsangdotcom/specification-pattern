@@ -72,11 +72,11 @@ public static class IncludeBuilder
                 PreviousPropertyType = typeof(TPreviousProperty),
                 PropertyType = typeof(TProperty),
             };
-
         Specification<T>? Spec = builder != null ? builder.Spec : Collectionbuilder.Spec;
-
         Spec!.Includes.Add(includeInfo);
 
-        return new IncludableSpecificationBuilder<T, TProperty>(Spec);
+        IIncludableSpecificationBuilder<T, TProperty> includeBuilder =
+            new IncludableSpecificationBuilder<T, TProperty>(Spec);
+        return includeBuilder;
     }
 }
