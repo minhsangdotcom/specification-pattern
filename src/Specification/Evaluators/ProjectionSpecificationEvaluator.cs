@@ -5,28 +5,33 @@ using Specification.Models;
 
 namespace Specification.Evaluators;
 
-public class SpecificationEvaluator
+public class ProjectionSpecificationEvaluator
 {
-    public static IQueryable<T> GetQuery<T>(
+    public static IQueryable<TResponse> GetQuery<T, TResponse>(
         IQueryable<T> inputQuery,
-        ISpecification<T> specification
+        ISpecification<T, TResponse> specification
     )
         where T : class
+        where TResponse : class
     {
         IQueryable<T> query = inputQuery;
         return Evaluate(query, specification);
     }
 
-    public static string SpecStringQuery<T>(ISpecification<T> specification)
+    public static string SpecStringQuery<T, TResponse>(ISpecification<T, TResponse> specification)
         where T : class
+        where TResponse : class
     {
-        IQueryable<T> query = Enumerable.Empty<T>().AsQueryable();
-        query = Evaluate(query, specification);
+        IQueryable<TResponse> query = Evaluate(Enumerable.Empty<T>().AsQueryable(), specification);
         return query.Expression.ToString();
     }
 
-    private static IQueryable<T> Evaluate<T>(IQueryable<T> query, ISpecification<T> specification)
+    private static IQueryable<TResponse> Evaluate<T, TResponse>(
+        IQueryable<T> query,
+        ISpecification<T, TResponse> specification
+    )
         where T : class
+        where TResponse : class
     {
         if (specification.IsNoTracking)
         {
@@ -77,15 +82,25 @@ public class SpecificationEvaluator
             }
         }
 
+        if (specification.Selector == null)
+        {
+            throw new Exception("Missing response mapping");
+        }
+        IQueryable<TResponse> queryResult = SelectorSpecificationEvaluator.GetQuery(
+            query,
+            specification
+        );
+
         if (specification.Skip > 0)
         {
-            query = query.Skip(specification.Skip);
+            queryResult = queryResult.Skip(specification.Skip);
         }
 
         if (specification.Take >= 0)
         {
-            query = query.Take(specification.Take);
+            queryResult = queryResult.Take(specification.Take);
         }
-        return query;
+
+        return queryResult;
     }
 }

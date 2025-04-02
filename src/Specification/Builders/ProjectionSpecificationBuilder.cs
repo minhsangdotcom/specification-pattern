@@ -1,14 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Threading.Tasks;
 using Specification.Interfaces;
 using Specification.Models;
 
 namespace Specification.Builders;
 
-public static class SpecificationSelectorBuilder
+public static class ProjectionSpecificationBuilder
 {
     public static ISpecificationBuilder<T, TResponse> Where<T, TResponse>(
         this ISpecificationBuilder<T, TResponse> builder,

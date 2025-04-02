@@ -4,24 +4,26 @@ using Specification.Models;
 
 namespace Specification.Builders;
 
-public static class OrderbyBuilder
+public static class ProjectionOrderbyBuilder
 {
-    public static ISpecificationBuilder<T> OrderBy<T>(
-        this ISpecificationBuilder<T> builder,
+    public static ISpecificationBuilder<T, TResponse> OrderBy<T, TResponse>(
+        this ISpecificationBuilder<T, TResponse> builder,
         Expression<Func<T, object>> orderby
     )
         where T : class
+        where TResponse : class
     {
         var orderbyInfo = new OrderByInfo<T>() { KeySelector = orderby, OrderType = OrderType.Asc };
         builder.Spec!.Sorts.Add(orderbyInfo);
         return builder;
     }
 
-    public static ISpecificationBuilder<T> OrderByDescending<T>(
-        this ISpecificationBuilder<T> builder,
+    public static ISpecificationBuilder<T, TResponse> OrderByDescending<T, TResponse>(
+        this ISpecificationBuilder<T, TResponse> builder,
         Expression<Func<T, object>> orderby
     )
         where T : class
+        where TResponse : class
     {
         var orderbyInfo = new OrderByInfo<T>()
         {
@@ -32,11 +34,12 @@ public static class OrderbyBuilder
         return builder;
     }
 
-    public static ISpecificationBuilder<T> ThenBy<T>(
-        this ISpecificationBuilder<T> builder,
+    public static ISpecificationBuilder<T, TResponse> ThenBy<T, TResponse>(
+        this ISpecificationBuilder<T, TResponse> builder,
         Expression<Func<T, object>> orderby
     )
         where T : class
+        where TResponse : class
     {
         var orderbyInfo = new OrderByInfo<T>()
         {
@@ -48,11 +51,12 @@ public static class OrderbyBuilder
         return builder;
     }
 
-    public static ISpecificationBuilder<T> ThenByDescending<T>(
-        this ISpecificationBuilder<T> builder,
+    public static ISpecificationBuilder<T, TResponse> ThenByDescending<T, TResponse>(
+        this ISpecificationBuilder<T, TResponse> builder,
         Expression<Func<T, object>> orderby
     )
         where T : class
+        where TResponse : class
     {
         var orderbyInfo = new OrderByInfo<T>()
         {

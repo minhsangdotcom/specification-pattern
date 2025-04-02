@@ -4,6 +4,23 @@ namespace Specification.Builders;
 
 public static class PaginationBuilder
 {
+    #region T ver
+    public static ISpecificationBuilder<T> Skip<T>(this ISpecificationBuilder<T> builder, int skip)
+        where T : class
+    {
+        builder.Spec!.Skip = skip;
+        return builder;
+    }
+
+    public static ISpecificationBuilder<T> Take<T>(this ISpecificationBuilder<T> builder, int take)
+        where T : class
+    {
+        builder.Spec!.Skip = take;
+        return builder;
+    }
+    #endregion
+
+    #region T, TResponse ver
     public static ISpecificationBuilder<T, TResponse> Skip<T, TResponse>(
         this ISpecificationBuilder<T, TResponse> builder,
         int skip
@@ -25,4 +42,5 @@ public static class PaginationBuilder
         builder.Spec!.Skip = take;
         return builder;
     }
+    #endregion
 }

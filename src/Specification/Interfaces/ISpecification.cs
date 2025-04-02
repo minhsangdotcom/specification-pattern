@@ -4,14 +4,18 @@ using Specification.Models;
 
 namespace Specification.Interfaces;
 
-public interface ISpecification<T>
+public interface ISpec<T>
     where T : class
 {
-    SpecificationBuilder<T> Query { get; }
-
     Expression<Func<T, bool>> Criteria { get; }
 
     List<IncludeInfo> Includes { get; }
+
+    public List<OrderByInfo<T>> Sorts { get; }
+
+    public int Skip { get; }
+
+    public int Take { get; }
 
     bool IsNoTracking { get; }
 
@@ -22,19 +26,17 @@ public interface ISpecification<T>
     string? CacheKey { get; }
 }
 
-public interface ISpecification<T, TResponse> : ISpecification<T>
+public interface ISpecification<T> : ISpec<T>
+    where T : class
+{
+    SpecificationBuilder<T> Query { get; }
+}
+
+public interface ISpecification<T, TResponse> : ISpec<T>
     where T : class
     where TResponse : class
 {
+    SpecificationBuilder<T, TResponse> Query { get; }
+
     public Expression<Func<T, TResponse>> Selector { get; }
-
-    public Expression<Func<TResponse, bool>> Filter { get; }
-
-    public Expression<Func<TResponse, bool>> Search { get; }
-
-    public List<OrderByInfo<TResponse>> Sorts { get; }
-
-    public int Skip { get; }
-
-    public int Take { get; }
 }

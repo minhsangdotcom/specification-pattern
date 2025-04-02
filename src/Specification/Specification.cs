@@ -22,6 +22,12 @@ public abstract class Specification<T> : ISpecification<T>
 
     public List<IncludeInfo> Includes { get; internal set; } = [];
 
+    public List<OrderByInfo<T>> Sorts { get; internal set; } = [];
+
+    public int Skip { get; internal set; } = -1;
+
+    public int Take { get; internal set; } = -1;
+
     public bool IsNoTracking { get; internal set; }
 
     public bool IsSplitQuery { get; internal set; }
@@ -78,7 +84,7 @@ public abstract class Specification<T> : ISpecification<T>
 
     protected string GetUniqueCachedKey(object? queryParemeter = null)
     {
-        string query = SpecificationEvaluator<T>.SpecStringQuery(this);
+        string query = SpecificationEvaluator.SpecStringQuery(this);
         string code = $"{query}";
         if (queryParemeter != null)
         {
@@ -89,19 +95,11 @@ public abstract class Specification<T> : ISpecification<T>
     }
 }
 
-public abstract class Specification<T, TResponse> : Specification<T>, ISpecification<T, TResponse>
+public class Specification<T, TResponse> : Specification<T>, ISpecification<T, TResponse>
     where T : class
     where TResponse : class
 {
+    public new SpecificationBuilder<T, TResponse> Query => new(this);
+
     public Expression<Func<T, TResponse>> Selector { get; internal set; } = null!;
-
-    public Expression<Func<TResponse, bool>> Filter { get; internal set; } = null!;
-
-    public Expression<Func<TResponse, bool>> Search { get; internal set; } = null!;
-
-    public List<OrderByInfo<TResponse>> Sorts { get; internal set; } = [];
-
-    public int Skip { get; internal set; }
-
-    public int Take { get; internal set; }
 }
