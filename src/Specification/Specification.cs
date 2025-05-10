@@ -42,6 +42,7 @@ public abstract class Specification<T> : ISpecification<T>
     public void CombineExpression(IEnumerable<CriteriaInfoUpdate<T>> criteriaInfoUpdates)
     {
         const string message = "is null while combing expression.";
+        List<CriteriaInfoUpdate<T>> listCriteriaInfoUpdate = [..criteriaInfoUpdates];
         for (int i = 0; i < Criteria.Count; i++)
         {
             var criteriaInfo =
@@ -52,8 +53,7 @@ public abstract class Specification<T> : ISpecification<T>
                     NullType.PropertyOrField,
                     this
                 );
-            var criteriaToUpdate = criteriaInfoUpdates.FirstOrDefault(x => x.Key == criteriaInfo.Key);
-
+            var criteriaToUpdate = listCriteriaInfoUpdate.Find(x => x.Key == criteriaInfo.Key);
             if (criteriaToUpdate == null)
             {
                 continue;
