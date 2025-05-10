@@ -18,7 +18,7 @@ public abstract class Specification<T> : ISpecification<T>
 
     public SpecificationBuilder<T> Query { get; }
 
-    public Expression<Func<T, bool>> Criteria { get; internal set; } = null!;
+    public List<CriteriaInfo<T>> Criteria { get; internal set; } = [];
 
     public List<IncludeInfo> Includes { get; internal set; } = [];
 
@@ -36,50 +36,50 @@ public abstract class Specification<T> : ISpecification<T>
 
     public string? CacheKey { get; internal set; }
 
-    internal void CombineExpression(Expression<Func<T, bool>> criteria, BinaryExpressionType type)
+    public void Update(string key, Expression<Func<T, bool>> newExpr) =>
+        Criteria.FirstOrDefault(c => c.Key == key)?.Update(newExpr);
+
+    public void CombineExpression(IEnumerable<CriteriaInfoUpdate<T>> criteriaInfoUpdates)
     {
         const string message = "is null while combing expression.";
-
-        if (criteria == null)
+        for (int i = 0; i < Criteria.Count; i++)
         {
-            throw new NullException(
-                nameof(criteria),
-                $"{nameof(criteria)} {message}",
-                NullType.PropertyOrField,
-                null
+            var criteriaInfo =
+                Criteria[i]
+                ?? throw new NullException(
+                    $"nameof(Criteria)[{i}]",
+                    $"{nameof(Criteria)}[{i}] {message}",
+                    NullType.PropertyOrField,
+                    this
+                );
+            var criteriaToUpdate = criteriaInfoUpdates.FirstOrDefault(x => x.Key == criteriaInfo.Key);
+
+            if (criteriaToUpdate == null)
+            {
+                continue;
+            }
+
+            ParameterExpression parameter = Expression.Parameter(typeof(T), "x");
+
+            Expression leftExpression = ParameterReplacerVisitor.Replace(
+                criteriaInfo.Criteria.Body,
+                criteriaInfo.Criteria.Parameters[0],
+                parameter
             );
-        }
 
-        if (Criteria == null)
-        {
-            throw new NullException(
-                nameof(Criteria),
-                $"{nameof(Criteria)} {message}",
-                NullType.PropertyOrField,
-                this
+            Expression rightExpression = ParameterReplacerVisitor.Replace(
+                criteriaToUpdate.Criteria!.Body,
+                criteriaToUpdate.Criteria.Parameters[0],
+                parameter
             );
+
+            BinaryExpression body =
+                criteriaToUpdate.Type == BinaryExpressionType.And
+                    ? Expression.And(leftExpression, rightExpression)
+                    : Expression.Or(leftExpression, rightExpression);
+
+            criteriaInfo.Criteria = Expression.Lambda<Func<T, bool>>(body, parameter);
         }
-
-        ParameterExpression parameter = Expression.Parameter(typeof(T), "x");
-
-        Expression leftExpression = ParameterReplacerVisitor.Replace(
-            Criteria.Body,
-            Criteria.Parameters[0],
-            parameter
-        );
-
-        Expression rightExpression = ParameterReplacerVisitor.Replace(
-            criteria.Body,
-            criteria.Parameters[0],
-            parameter
-        );
-
-        BinaryExpression body =
-            type == BinaryExpressionType.And
-                ? Expression.And(leftExpression, rightExpression)
-                : Expression.Or(leftExpression, rightExpression);
-
-        Criteria = Expression.Lambda<Func<T, bool>>(body, parameter);
     }
 
     protected string GetUniqueCachedKey(object? queryParemeter = null)
@@ -91,6 +91,7 @@ public abstract class Specification<T> : ISpecification<T>
             string param = JsonSerializer.Serialize(queryParemeter);
             code += $"~{param}";
         }
+
         return code;
     }
 }

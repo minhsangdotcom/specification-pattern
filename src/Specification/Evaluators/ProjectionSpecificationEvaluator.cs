@@ -14,8 +14,7 @@ public class ProjectionSpecificationEvaluator
         where T : class
         where TResponse : class
     {
-        IQueryable<T> query = inputQuery;
-        return Evaluate(query, specification);
+        return Evaluate(inputQuery, specification);
     }
 
     public static string SpecStringQuery<T, TResponse>(ISpecification<T, TResponse> specification)
@@ -38,9 +37,10 @@ public class ProjectionSpecificationEvaluator
             query = query.AsNoTracking();
         }
 
-        if (specification.Criteria != null)
+        if (specification.Criteria.Count > 0)
         {
-            query = query.Where(specification.Criteria);
+            query = specification.Criteria.Aggregate(query, (current, criteria) =>
+                current.Where(criteria.Criteria));
         }
 
         if (specification.Includes.Count > 0)
@@ -76,6 +76,7 @@ public class ProjectionSpecificationEvaluator
                             : order.ThenByDescending(orderbyInfo.KeySelector);
                 }
             }
+
             if (order.Any())
             {
                 query = order;
@@ -86,6 +87,7 @@ public class ProjectionSpecificationEvaluator
         {
             throw new Exception("Missing response mapping");
         }
+
         IQueryable<TResponse> queryResult = SelectorSpecificationEvaluator.GetQuery(
             query,
             specification

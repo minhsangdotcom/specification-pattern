@@ -33,9 +33,10 @@ public class SpecificationEvaluator
             query = query.AsNoTracking();
         }
 
-        if (specification.Criteria != null)
+        if (specification.Criteria.Count > 0)
         {
-            query = query.Where(specification.Criteria);
+            query = specification.Criteria.Aggregate(query, (current, criteria) =>
+                current.Where(criteria.Criteria));
         }
 
         if (specification.Includes.Count > 0)
@@ -71,6 +72,7 @@ public class SpecificationEvaluator
                             : order.ThenByDescending(orderbyInfo.KeySelector);
                 }
             }
+
             if (order.Any())
             {
                 query = order;
@@ -86,6 +88,7 @@ public class SpecificationEvaluator
         {
             query = query.Take(specification.Take);
         }
+
         return query;
     }
 }

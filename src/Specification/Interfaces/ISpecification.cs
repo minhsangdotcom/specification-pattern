@@ -7,7 +7,7 @@ namespace Specification.Interfaces;
 public interface ISpec<T>
     where T : class
 {
-    Expression<Func<T, bool>> Criteria { get; }
+    List<CriteriaInfo<T>> Criteria { get; }
 
     List<IncludeInfo> Includes { get; }
 

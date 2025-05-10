@@ -8,7 +8,7 @@ public static class ProjectionSpecificationBuilder
 {
     public static ISpecificationBuilder<T, TResponse> Where<T, TResponse>(
         this ISpecificationBuilder<T, TResponse> builder,
-        Expression<Func<T, bool>> criteria
+        List<CriteriaInfo<T>> criteria
     )
         where T : class
         where TResponse : class
@@ -20,13 +20,12 @@ public static class ProjectionSpecificationBuilder
 
     public static ISpecificationBuilder<T, TResponse> Combine<T, TResponse>(
         this ISpecificationBuilder<T, TResponse> builder,
-        Expression<Func<T, bool>> criteria,
-        BinaryExpressionType type
+        List<CriteriaInfoUpdate<T>> criteria
     )
         where T : class
         where TResponse : class
     {
-        builder.Spec!.CombineExpression(criteria, type);
+        builder.Spec!.CombineExpression(criteria);
 
         return builder;
     }
