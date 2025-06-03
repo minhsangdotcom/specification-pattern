@@ -2,10 +2,15 @@ using System.Net;
 
 namespace Specification.Exceptions;
 
-public class NullException(string name, string message, NullType nullType, object? target)
-    : Exception(WriteMessage(name, message, nullType, target))
+public class NullException : Exception
 {
-    public HttpStatusCode HttpStatusCode { get; private set; }
+    public NullException(string name, string message, NullType nullType, object? target)
+        : base(WriteMessage(name, message, nullType, target)) { }
+
+    public NullException(string name, string message, NullType nullType, string? targetType)
+        : base(WriteMessage(name, message, nullType, targetType)) { }
+
+    public HttpStatusCode HttpStatusCode { get; private set; } = HttpStatusCode.InternalServerError;
 
     private static string WriteMessage(
         string name,
@@ -15,6 +20,15 @@ public class NullException(string name, string message, NullType nullType, objec
     ) =>
         $"{message} ({nullType} {name}"
         + (target != null ? $" of {target.GetType().FullName})" : ") ");
+
+    private static string WriteMessage(
+        string name,
+        string message,
+        NullType nullType,
+        string? targetType = null
+    ) =>
+        $"{message} ({nullType} {name}"
+        + (targetType != null ? $" of {targetType.GetType().FullName})" : ") ");
 }
 
 public enum NullType

@@ -11,7 +11,7 @@ namespace Specification;
 public abstract class Specification<T> : ISpecification<T>
     where T : class
 {
-    public Specification()
+    protected Specification()
     {
         Query = new SpecificationBuilder<T>(this);
     }
@@ -42,18 +42,13 @@ public abstract class Specification<T> : ISpecification<T>
     public void CombineExpression(IEnumerable<CriteriaInfoUpdate<T>> criteriaInfoUpdates)
     {
         const string message = "is null while combing expression.";
-        List<CriteriaInfoUpdate<T>> listCriteriaInfoUpdate = [..criteriaInfoUpdates];
+        List<CriteriaInfoUpdate<T>> listCriteriaInfoUpdate = [.. criteriaInfoUpdates];
         for (int i = 0; i < Criteria.Count; i++)
         {
-            var criteriaInfo =
-                Criteria[i]
-                ?? throw new NullException(
-                    $"nameof(Criteria)[{i}]",
-                    $"{nameof(Criteria)}[{i}] {message}",
-                    NullType.PropertyOrField,
-                    this
-                );
-            var criteriaToUpdate = listCriteriaInfoUpdate.Find(x => x.Key == criteriaInfo.Key);
+            CriteriaInfo<T> criteriaInfo = Criteria[i];
+            CriteriaInfoUpdate<T>? criteriaToUpdate = listCriteriaInfoUpdate.Find(x =>
+                x.Key == criteriaInfo.Key
+            );
             if (criteriaToUpdate == null)
             {
                 continue;
@@ -67,8 +62,18 @@ public abstract class Specification<T> : ISpecification<T>
                 parameter
             );
 
+            if (criteriaToUpdate.Criteria == null)
+            {
+                throw new NullException(
+                    nameof(criteriaToUpdate.Criteria),
+                    $"{nameof(criteriaToUpdate.Criteria)} {message}",
+                    NullType.PropertyOrField,
+                    null
+                );
+            }
+
             Expression rightExpression = ParameterReplacerVisitor.Replace(
-                criteriaToUpdate.Criteria!.Body,
+                criteriaToUpdate.Criteria.Body,
                 criteriaToUpdate.Criteria.Parameters[0],
                 parameter
             );
@@ -82,17 +87,15 @@ public abstract class Specification<T> : ISpecification<T>
         }
     }
 
-    protected string GetUniqueCachedKey(object? queryParemeter = null)
+    protected string GetUniqueCachedKey(object? queryParameter = null)
     {
-        string query = SpecificationEvaluator.SpecStringQuery(this);
-        string code = $"{query}";
-        if (queryParemeter != null)
+        string query = SpecificationEvaluator.GetStringQuery(this);
+        if (queryParameter == null)
         {
-            string param = JsonSerializer.Serialize(queryParemeter);
-            code += $"~{param}";
+            return query;
         }
-
-        return code;
+        string param = JsonSerializer.Serialize(queryParameter);
+        return $"{query}~{param}";
     }
 }
 

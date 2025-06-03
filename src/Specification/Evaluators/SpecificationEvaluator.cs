@@ -17,7 +17,7 @@ public class SpecificationEvaluator
         return Evaluate(query, specification);
     }
 
-    public static string SpecStringQuery<T>(ISpecification<T> specification)
+    public static string GetStringQuery<T>(ISpecification<T> specification)
         where T : class
     {
         IQueryable<T> query = Enumerable.Empty<T>().AsQueryable();
@@ -35,8 +35,10 @@ public class SpecificationEvaluator
 
         if (specification.Criteria.Count > 0)
         {
-            query = specification.Criteria.Aggregate(query, (current, criteria) =>
-                current.Where(criteria.Criteria));
+            query = specification.Criteria.Aggregate(
+                query,
+                (current, criteria) => current.Where(criteria.Criteria)
+            );
         }
 
         if (specification.Includes.Count > 0)
