@@ -10,12 +10,14 @@
     <Authors>Tran Minh Sang</Authors>
     <Company>minhsangdotcom</Company>
     <PackageTags>csharp, nuget, clean architecture, Design pattern</PackageTags>
-    <Description>Specification pattern implementation</Description>
+    <RepositoryUrl>https://github.com/minhsangdotcom/specification-pattern</RepositoryUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.13" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="8.0.13" />
+    <None Include="../../README.md" Pack="true" PackagePath="" />
   </ItemGroup>
   
 </Project>
