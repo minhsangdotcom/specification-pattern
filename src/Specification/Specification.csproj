@@ -6,7 +6,7 @@
     <Nullable>enable</Nullable>
 
     <PackageId>minhsangdotcom.TheTemplate.SpecificationPattern</PackageId>
-    <Version>1.0.3</Version>
+    <Version>1.0.4</Version>
     <Authors>Tran Minh Sang</Authors>
     <Company>minhsangdotcom</Company>
     <PackageTags>csharp, nuget, clean architecture, Design pattern</PackageTags>
@@ -15,8 +15,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.13" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="8.0.13" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.17" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="8.0.17" />
     <None Include="../../README-NUGET.md" Pack="true" PackagePath="" />
   </ItemGroup>
   
