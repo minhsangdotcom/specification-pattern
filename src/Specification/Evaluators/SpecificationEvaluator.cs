@@ -5,7 +5,7 @@ using Specification.Models;
 
 namespace Specification.Evaluators;
 
-public class SpecificationEvaluator
+public static class SpecificationEvaluator
 {
     public static IQueryable<T> GetQuery<T>(
         IQueryable<T> inputQuery,
@@ -17,7 +17,7 @@ public class SpecificationEvaluator
         return Evaluate(query, specification);
     }
 
-    public static string GetStringQuery<T>(ISpecification<T> specification)
+    public static string ToStringQuery<T>(this ISpecification<T> specification)
         where T : class
     {
         IQueryable<T> query = Enumerable.Empty<T>().AsQueryable();
@@ -33,11 +33,11 @@ public class SpecificationEvaluator
             query = query.AsNoTracking();
         }
 
-        if (specification.Criteria.Count > 0)
+        if (specification.Wheres.Count > 0)
         {
-            query = specification.Criteria.Aggregate(
+            query = specification.Wheres.Aggregate(
                 query,
-                (current, criteria) => current.Where(criteria.Criteria)
+                (current, criteria) => current.Where(criteria.Filter)
             );
         }
 

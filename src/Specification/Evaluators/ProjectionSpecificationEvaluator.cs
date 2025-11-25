@@ -5,7 +5,7 @@ using Specification.Models;
 
 namespace Specification.Evaluators;
 
-public class ProjectionSpecificationEvaluator
+public static class ProjectionSpecificationEvaluator
 {
     public static IQueryable<TResponse> GetQuery<T, TResponse>(
         IQueryable<T> inputQuery,
@@ -17,7 +17,9 @@ public class ProjectionSpecificationEvaluator
         return Evaluate(inputQuery, specification);
     }
 
-    public static string SpecStringQuery<T, TResponse>(ISpecification<T, TResponse> specification)
+    public static string ToStringQuery<T, TResponse>(
+        this ISpecification<T, TResponse> specification
+    )
         where T : class
         where TResponse : class
     {
@@ -37,10 +39,12 @@ public class ProjectionSpecificationEvaluator
             query = query.AsNoTracking();
         }
 
-        if (specification.Criteria.Count > 0)
+        if (specification.Wheres.Count > 0)
         {
-            query = specification.Criteria.Aggregate(query, (current, criteria) =>
-                current.Where(criteria.Criteria));
+            query = specification.Wheres.Aggregate(
+                query,
+                (current, criteria) => current.Where(criteria.Filter)
+            );
         }
 
         if (specification.Includes.Count > 0)
@@ -85,7 +89,7 @@ public class ProjectionSpecificationEvaluator
 
         if (specification.Selector == null)
         {
-            throw new Exception("Missing response mapping");
+            throw new InvalidOperationException("Selector is missing.");
         }
 
         IQueryable<TResponse> queryResult = SelectorSpecificationEvaluator.GetQuery(

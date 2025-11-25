@@ -8,23 +8,11 @@ public static class SpecificationBaseBuilder
 {
     public static ISpecificationBuilder<T> Where<T>(
         this ISpecificationBuilder<T> builder,
-        Expression<Func<T, bool>> expression,
-        string? key = null
+        Expression<Func<T, bool>> expression
     )
         where T : class
     {
-        builder.Spec!.Criteria.Add(new CriteriaInfo<T>(key, expression));
-        return builder;
-    }
-
-    public static ISpecificationBuilder<T> Combine<T>(
-        this ISpecificationBuilder<T> builder,
-        List<CriteriaInfoUpdate<T>> criteria
-    )
-        where T : class
-    {
-        builder.Spec!.CombineExpression(criteria);
-
+        builder.Spec!.Wheres.Add(new WhereInfo<T>(expression));
         return builder;
     }
 

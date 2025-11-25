@@ -8,24 +8,12 @@ public static class ProjectionSpecificationBuilder
 {
     public static ISpecificationBuilder<T, TResponse> Where<T, TResponse>(
         this ISpecificationBuilder<T, TResponse> builder,
-        List<CriteriaInfo<T>> criteria
+        Expression<Func<T, bool>> expression
     )
         where T : class
         where TResponse : class
     {
-        builder.Spec!.Criteria = criteria;
-
-        return builder;
-    }
-
-    public static ISpecificationBuilder<T, TResponse> Combine<T, TResponse>(
-        this ISpecificationBuilder<T, TResponse> builder,
-        List<CriteriaInfoUpdate<T>> criteria
-    )
-        where T : class
-        where TResponse : class
-    {
-        builder.Spec!.CombineExpression(criteria);
+        builder.Spec!.Wheres.Add(new WhereInfo<T>(expression));
 
         return builder;
     }

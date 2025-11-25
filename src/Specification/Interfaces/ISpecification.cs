@@ -7,7 +7,7 @@ namespace Specification.Interfaces;
 public interface ISpec<T>
     where T : class
 {
-    List<CriteriaInfo<T>> Criteria { get; }
+    List<WhereInfo<T>> Wheres { get; }
 
     List<IncludeInfo> Includes { get; }
 
