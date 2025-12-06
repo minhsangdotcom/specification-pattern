@@ -10,3 +10,11 @@ public class OrderByInfo<T>
 
     public bool IsThenBy { get; set; }
 }
+
+public sealed class SortMeta
+{
+    public string Expression { get; set; } = string.Empty;
+    public OrderType OrderType { get; set; }
+
+    public bool IsThenBy { get; set; }
+}

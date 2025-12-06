@@ -1,9 +1,29 @@
-# specification-pattern
+# Specification.Abstractions
 
-This pattern help u enhance your repositories by handling some expressions such as: where, include, AsNoTracking, AsSplitQuery...
+A lightweight, provider-agnostic **Specification pattern abstraction** for .NET.
 
-I learned it from [Specification by Ardalis](https://github.com/ardalis/Specification)
+This package defines the **core specification model**, expression metadata, and cache metadata types
 
-Check it out at [Nuget](https://www.nuget.org/packages/minhsangdotcom.TheTemplate.SpecificationPattern)
+> ⚠️ This package does **NOT** include an evaluator.  
+> The EF Core-enabled evaluator lives in a separate package (e.g., `TranMinhSang.Specification.EFCore`).
 
-Hope u enjoy it 🚀 happy hacking 😄.
+# Install
+
+```
+dotnet add package minhsangdotcom.TheTemplate.SpecificationPattern
+```
+
+# :book: Basic Usage
+
+```csharp
+public class ActiveUsersSpec : Specification<User>
+{
+    public ActiveUsersSpec(string fullName)
+    {
+        Query.Where(x => x.IsActive);
+        Query.OrderBy(x => x.FullName == fullName);
+        string key = SpecificationCacheKeyGenerator.Create(this, fullName);
+        Query.EnableCache(key);
+    }
+}
+```

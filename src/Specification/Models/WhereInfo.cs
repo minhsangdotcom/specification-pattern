@@ -7,3 +7,8 @@ public class WhereInfo<T>(Expression<Func<T, bool>> filter)
 {
     public Expression<Func<T, bool>> Filter { get; } = filter;
 }
+
+public sealed class WhereMeta
+{
+    public string Expression { get; set; } = string.Empty;
+}

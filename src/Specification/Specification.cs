@@ -1,7 +1,6 @@
 using System.Linq.Expressions;
 using System.Text.Json;
 using Specification.Builders;
-using Specification.Evaluators;
 using Specification.Interfaces;
 using Specification.Models;
 
@@ -34,17 +33,6 @@ public abstract class Specification<T> : ISpecification<T>
     public bool CacheEnabled { get; internal set; }
 
     public string? CacheKey { get; internal set; }
-
-    protected virtual string GetUniqueCachedKey(object? queryParameter = null)
-    {
-        string query = this.ToStringQuery();
-        if (queryParameter == null)
-        {
-            return query;
-        }
-        string param = JsonSerializer.Serialize(queryParameter);
-        return $"{query}~{param}";
-    }
 }
 
 public class Specification<T, TResponse> : Specification<T>, ISpecification<T, TResponse>
@@ -54,15 +42,4 @@ public class Specification<T, TResponse> : Specification<T>, ISpecification<T, T
     public new SpecificationBuilder<T, TResponse> Query => new(this);
 
     public Expression<Func<T, TResponse>> Selector { get; internal set; } = null!;
-
-    protected override string GetUniqueCachedKey(object? queryParameter = null)
-    {
-        string query = this.ToStringQuery<T, TResponse>();
-        if (queryParameter == null)
-        {
-            return query;
-        }
-        string param = JsonSerializer.Serialize(queryParameter);
-        return $"{query}~{param}";
-    }
 }
