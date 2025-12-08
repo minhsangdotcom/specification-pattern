@@ -14,7 +14,7 @@ public class OrderByInfo<T>
 public sealed class SortMeta
 {
     public string Expression { get; set; } = string.Empty;
-    public OrderType OrderType { get; set; }
+    public OrderType? OrderType { get; set; }
 
     public bool IsThenBy { get; set; }
 }

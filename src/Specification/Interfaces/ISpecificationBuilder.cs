@@ -14,11 +14,11 @@ public interface ISpecificationBuilder<T, TResponse>
     Specification<T, TResponse>? Spec { get; }
 }
 
-// include
-public interface IIncludableSpecificationBuilder<T, TProperty> : ISpecificationBuilder<T>
+// include builder
+public interface IIncludableSpecificationBuilder<T, out TProperty> : ISpecificationBuilder<T>
     where T : class;
 
-public interface IIncludableSpecificationBuilder<T, TResponse, TProperty>
+public interface IIncludableSpecificationBuilder<T, TResponse, out TProperty>
     : ISpecificationBuilder<T, TResponse>
     where T : class
     where TResponse : class;

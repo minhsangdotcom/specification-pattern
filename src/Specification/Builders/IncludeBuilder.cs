@@ -39,17 +39,18 @@ public static class IncludeBuilder
         return ThenIncludeBase(thenIncludeExpression, builder);
     }
 
+    //Then include with collection is previous type
     public static IIncludableSpecificationBuilder<T, TProperty> ThenInclude<
         T,
         TPreviousProperty,
         TProperty
     >(
-        this IIncludableSpecificationBuilder<T, ICollection<TPreviousProperty>> builder,
+        this IIncludableSpecificationBuilder<T, IEnumerable<TPreviousProperty>> builder,
         Expression<Func<TPreviousProperty, TProperty>> thenIncludeExpression
     )
         where T : class
     {
-        return ThenIncludeBase(thenIncludeExpression, Collectionbuilder: builder);
+        return ThenIncludeBase(thenIncludeExpression, CollectionBuilder: builder);
     }
 
     private static IIncludableSpecificationBuilder<T, TProperty> ThenIncludeBase<
@@ -59,7 +60,7 @@ public static class IncludeBuilder
     >(
         Expression<Func<TPreviousProperty, TProperty>> thenIncludeExpression,
         IIncludableSpecificationBuilder<T, TPreviousProperty> builder = null!,
-        IIncludableSpecificationBuilder<T, ICollection<TPreviousProperty>> Collectionbuilder = null!
+        IIncludableSpecificationBuilder<T, IEnumerable<TPreviousProperty>> CollectionBuilder = null!
     )
         where T : class
     {
@@ -72,7 +73,7 @@ public static class IncludeBuilder
                 PreviousPropertyType = typeof(TPreviousProperty),
                 PropertyType = typeof(TProperty),
             };
-        Specification<T>? Spec = builder != null ? builder.Spec : Collectionbuilder.Spec;
+        Specification<T>? Spec = builder != null ? builder.Spec : CollectionBuilder.Spec;
         Spec!.Includes.Add(includeInfo);
 
         IIncludableSpecificationBuilder<T, TProperty> includeBuilder =

@@ -55,9 +55,9 @@ public class SpecificationCacheKeyGenerator
             .. spec.Includes.Select(i => new IncludeMeta
             {
                 Expression = SafeExpressionToString(i.LamdaExpression),
-                PropertyType = i.PropertyType,
-                EntityType = i.EntityType,
-                PreviousPropertyType = i.PreviousPropertyType,
+                PropertyType = i.PropertyType?.FullName,
+                EntityType = i.EntityType?.FullName,
+                PreviousPropertyType = i.PreviousPropertyType?.FullName,
                 InCludeType = i.InCludeType,
             }),
         ];
@@ -87,6 +87,7 @@ public class SpecificationCacheKeyGenerator
             isSplitQuery: spec.IsSplitQuery,
             specCacheKey: spec.CacheKey,
             selector: null,
+            selectorMany: null,
             queryParameters: parameters
         );
     }
@@ -111,9 +112,9 @@ public class SpecificationCacheKeyGenerator
             .. spec.Includes.Select(i => new IncludeMeta
             {
                 Expression = SafeExpressionToString(i.LamdaExpression),
-                PropertyType = i.PropertyType,
-                EntityType = i.EntityType,
-                PreviousPropertyType = i.PreviousPropertyType,
+                PropertyType = i.PropertyType?.FullName,
+                EntityType = i.EntityType?.FullName,
+                PreviousPropertyType = i.PreviousPropertyType?.FullName,
                 InCludeType = i.InCludeType,
             }),
         ];
@@ -143,12 +144,18 @@ public class SpecificationCacheKeyGenerator
             isSplitQuery: spec.IsSplitQuery,
             specCacheKey: spec.CacheKey,
             selector: SafeExpressionToString(spec.Selector),
+            selectorMany: SafeExpressionToString(spec.SelectorMany),
             queryParameters: parameters
         );
     }
 
-    private static string SafeExpressionToString(LambdaExpression expression)
+    private static string SafeExpressionToString(LambdaExpression? expression)
     {
+        if (expression is null)
+        {
+            return string.Empty;
+        }
+
         return expression.ToString();
     }
 }

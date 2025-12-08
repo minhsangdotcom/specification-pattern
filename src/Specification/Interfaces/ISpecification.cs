@@ -39,4 +39,5 @@ public interface ISpecification<T, TResponse> : ISpec<T>
     SpecificationBuilder<T, TResponse> Query { get; }
 
     public Expression<Func<T, TResponse>> Selector { get; }
+    public Expression<Func<T, IEnumerable<TResponse>>> SelectorMany { get; }
 }

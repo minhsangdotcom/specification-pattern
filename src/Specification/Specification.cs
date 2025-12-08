@@ -1,5 +1,4 @@
 using System.Linq.Expressions;
-using System.Text.Json;
 using Specification.Builders;
 using Specification.Interfaces;
 using Specification.Models;
@@ -42,4 +41,5 @@ public class Specification<T, TResponse> : Specification<T>, ISpecification<T, T
     public new SpecificationBuilder<T, TResponse> Query => new(this);
 
     public Expression<Func<T, TResponse>> Selector { get; internal set; } = null!;
+    public Expression<Func<T, IEnumerable<TResponse>>> SelectorMany { get; internal set; } = null!;
 }
