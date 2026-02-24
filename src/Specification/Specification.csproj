@@ -1,12 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFrameworks>net8.0</TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
 
     <PackageId>minhsangdotcom.TheTemplate.SpecificationPattern</PackageId>
-    <Version>1.0.8</Version>
+    <Version>1.0.9</Version>
     <Authors>Tran Minh Sang</Authors>
     <Company>minhsangdotcom</Company>
     <PackageTags>csharp, nuget, clean architecture, Design pattern</PackageTags>
